@@ -21,6 +21,7 @@ export default class ReactDependentScript extends Component {
       return;
     }
     const { scripts, stylesheets } = this.props;
+    // console.log("script",scripts);
 
     // Load the stylesheets first, but don't wait for them to complete, as
     // nothing will break.
@@ -52,8 +53,13 @@ export default class ReactDependentScript extends Component {
           scriptNode.addEventListener("load", this._handleLoad);
           scriptNode.addEventListener(
             "error",
-            (script.onerror, // error callback
-            script.not_required && this._handleLoad)
+            // error callback
+            function() {
+              if(script.onerror) {
+                script.onerror();
+              }
+              script.not_required ?  this._handleLoad : console.log("error ignored",src)
+            }
             // using not_required,
             // user can choose to render children,
             // even on error
